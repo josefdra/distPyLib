@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/src/cpp/**",
+                "${env:CONDA_PREFIX}/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "${env:CONDA_PREFIX}/bin/clang++",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}

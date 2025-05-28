@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "pybind11>=2.6.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "distPyLib"
+version = "1.0.0"
+description = "A Python MPI library with C++ backend"
+authors = [{name = "Josef Dräxl", email = "info@draexl-it.com"}]
+license = {text = "MIT"}
+requires-python = ">=3.8"
+dependencies = ["numpy"]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-mpi"]

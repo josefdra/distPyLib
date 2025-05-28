@@ -1,0 +1,16 @@
+{
+    "python.defaultInterpreterPath": "/opt/homebrew/Caskroom/miniforge/base/envs/distPyLib/bin/python",
+    "cmake.configureOnOpen": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.generator": "Ninja",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}/build",
+        "--header-insertion=never",
+        "--clang-tidy"
+    ],
+    "clangd.fallbackFlags": [
+        "-I${workspaceFolder}/src/cc",
+        "-I${env:CONDA_PREFIX}/include"
+    ]
+}

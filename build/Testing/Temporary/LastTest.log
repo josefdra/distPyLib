@@ -1,0 +1,42 @@
+Start testing: May 28 22:45 NZST
+----------------------------------------------------------
+1/1 Testing: MPI_Tests
+1/1 Test: MPI_Tests
+Command: "/opt/homebrew/Caskroom/miniforge/base/envs/distPyLib/bin/mpirun" "-n" "2" "./test_runner"
+Directory: /Users/josefdra/dev/projects/distPyLib/build/tests/cc
+"MPI_Tests" start time: May 28 22:45 NZST
+Output:
+----------------------------------------------------------
+[0;32m[==========] [mRunning 2 tests from 1 test suite.
+[0;32m[----------] [mGlobal test environment set-up.
+[0;32m[----------] [m2 tests from MPITest
+[0;32m[ RUN      ] [mMPITest.InitializationTest
+[0;32m[==========] [mRunning 2 tests from 1 test suite.
+[0;32m[----------] [mGlobal test environment set-up.
+[0;32m[----------] [m2 tests from MPITest
+[0;32m[ RUN      ] [mMPITest.InitializationTest
+[0;32m[       OK ] [mMPITest.InitializationTest (0 ms)
+[0;32m[ RUN      ] [mMPITest.ParallelComputeTest
+[0;32m[       OK ] [mMPITest.InitializationTest (0 ms)
+[0;32m[ RUN      ] [mMPITest.ParallelComputeTest
+[0;32m[       OK ] [mMPITest.ParallelComputeTest (0 ms)
+[0;32m[----------] [m2 tests from MPITest (0 ms total)
+
+[0;32m[----------] [mGlobal test environment tear-down
+[0;32m[==========] [m2 tests from 1 test suite ran. (0 ms total)
+[0;32m[  PASSED  ] [m2 tests.
+[0;32m[       OK ] [mMPITest.ParallelComputeTest (0 ms)
+[0;32m[----------] [m2 tests from MPITest (0 ms total)
+
+[0;32m[----------] [mGlobal test environment tear-down
+[0;32m[==========] [m2 tests from 1 test suite ran. (0 ms total)
+[0;32m[  PASSED  ] [m2 tests.
+<end of output>
+Test time =   1.11 sec
+----------------------------------------------------------
+Test Passed.
+"MPI_Tests" end time: May 28 22:45 NZST
+"MPI_Tests" time elapsed: 00:00:01
+----------------------------------------------------------
+
+End testing: May 28 22:45 NZST

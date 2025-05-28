@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/josefdra/dev/projects/distPyLib/build/cmake_install.cmake",
+		"/Users/josefdra/dev/projects/distPyLib/build/tests/cc/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
