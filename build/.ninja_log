@@ -1,8 +1,0 @@
-# ninja log v6
-1	337	1748428976476482154	CMakeFiles/mpi_core.dir/src/cc/mpi_wrapper.cc.o	b95d2b6a7b0925ed
-339	396	1748428976814520749	libmpi_core.a	d5aff58097260e8a
-1	461	1748428976476735030	tests/cc/CMakeFiles/test_runner.dir/test_main.cc.o	1199d866ca582e12
-1	496	1748428976476822947	tests/cc/CMakeFiles/test_runner.dir/test_mpi_core.cc.o	deb31a2b1324aecc
-496	528	1748428976971558594	tests/cc/test_runner	a86118a82ea575c2
-1	921	1748428976476639863	CMakeFiles/_mpi_core.dir/src/cc/python_bindings.cc.o	4b2e641f0aa0bf86
-921	1459	1748428977397029576	_mpi_core.cpython-313-darwin.so	d044efd977718aaa
