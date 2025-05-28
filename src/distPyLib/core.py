@@ -1,6 +1,6 @@
 import os
-import sys
 from typing import List, Optional
+from pathlib import Path
 try:
     from . import _parallel_sum
 except ImportError:
@@ -9,60 +9,35 @@ except ImportError:
 class ParaSum:
     """High-level interface for MPI computations."""
     
-    def __init__(self, auto_spawn: bool = True, num_processes: Optional[int] = None):
-        self.auto_spawn = auto_spawn
+    def __init__(self, num_processes: Optional[int] = None):
         self.num_processes = num_processes or os.cpu_count()
-        self.paraSum = None
-        self._ensure_mpi_environment()
-    
-    def _ensure_mpi_environment(self):
-        """Ensure we're running in an MPI environment."""
-        # Check if we're already in an MPI environment
-        if 'OMPI_COMM_WORLD_SIZE' in os.environ or 'PMI_SIZE' in os.environ:
-            # Already in MPI context
-            self.paraSum = _parallel_sum.ParaSum()
-            return
         
-        if self.auto_spawn and self.paraSum is None:
-            # Need to restart with mpirun
-            self._restart_with_mpi()
+        # Set worker path environment variable for C++ to find executable
+        worker_path = Path(__file__).parent / "mpi_worker"
+        if worker_path.exists():
+            os.environ["PATH"] = str(worker_path.parent) + os.pathsep + os.environ.get("PATH", "")
+            print("found")
+        else:
+            print("not found")
+        
+        self.paraSum = _parallel_sum.ParaSum()
     
-    def _restart_with_mpi(self):
-        """Restart the current script with mpirun."""
-        if len(sys.argv) > 0:
-            mpi_cmd = [
-                'mpirun', '-n', str(self.num_processes),
-                sys.executable
-            ] + sys.argv
-            
-            print(f"Restarting with MPI: {' '.join(mpi_cmd)}")
-            os.execvp('mpirun', mpi_cmd)
-    
-    def parallel_sum(self, data: List[float]) -> List[float]:
+    def parallel_sum(self, data: List[float]) -> float:
         """Run parallel summation on data."""
-        if self.paraSum is None:
-            self.paraSum = _parallel_sum.ParaSum()
-        
-        return self.paraSum.parallel_sum(data)
+        return self.paraSum.parallel_sum(data, self.num_processes)
     
     @property
     def rank(self) -> int:
-        """Get MPI rank."""
-        if self.paraSum is None:
-            self.paraSum = _parallel_sum.ParaSum()
+        """Get MPI rank (always 0 for the Python process)."""
         return self.paraSum.get_rank()
     
     @property
     def size(self) -> int:
-        """Get MPI size."""
-        if self.paraSum is None:
-            self.paraSum = _parallel_sum.ParaSum()
+        """Get MPI size (always 1 for the Python process)."""
         return self.paraSum.get_size()
     
     @property
     def is_mpi_initialized(self) -> bool:
         """Check if MPI is initialized."""
-        if self.paraSum is None:
-            return False
         return self.paraSum.is_initialized()
     

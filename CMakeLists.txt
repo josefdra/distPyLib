@@ -26,6 +26,15 @@ target_include_directories(parallel_sum PUBLIC
     ${MPI_CXX_INCLUDE_DIRS}
 )
 
+# Create MPI worker executable
+add_executable(mpi_worker
+    src/cc/mpi_worker.cc
+)
+
+target_link_libraries(mpi_worker
+    MPI::MPI_CXX
+)
+
 # Create Python module
 pybind11_add_module(_parallel_sum 
     src/cc/python_bindings.cc
@@ -38,6 +47,14 @@ target_link_libraries(_parallel_sum PRIVATE
 
 # Compiler-specific options
 target_compile_definitions(_parallel_sum PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+
+# Install Python module and executable
+install(TARGETS _parallel_sum DESTINATION distPyLib)
+install(TARGETS mpi_worker 
+        RUNTIME DESTINATION distPyLib
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE 
+                   GROUP_READ GROUP_EXECUTE 
+                   WORLD_READ WORLD_EXECUTE)
 
 # Enable testing
 enable_testing()
@@ -56,8 +73,8 @@ if(PYTHON_EXECUTABLE)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
     
-    # Make sure Python module is built before running Python tests
+    # Make sure Python module and worker are built before running Python tests
     set_tests_properties(Python_Tests_Sequential PROPERTIES
-        DEPENDS _parallel_sum
+        DEPENDS "_parallel_sum;mpi_worker"
     )
 endif()
