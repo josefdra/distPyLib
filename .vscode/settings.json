@@ -12,5 +12,11 @@
     "clangd.fallbackFlags": [
         "-I${workspaceFolder}/src/cc",
         "-I${env:CONDA_PREFIX}/include"
-    ]
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src"
+    ],
+    "python.analysis.stubPath": "${workspaceFolder}/stubs",
+    "pylance.inlayHints.variableTypes": false,
+    "python.analysis.diagnosticMode": "workspace"
 }

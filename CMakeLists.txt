@@ -42,3 +42,22 @@ target_compile_definitions(_mpi_core PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO
 # Enable testing
 enable_testing()
 add_subdirectory(tests/cc)
+
+find_program(PYTHON_EXECUTABLE python3)
+if(NOT PYTHON_EXECUTABLE)
+    find_program(PYTHON_EXECUTABLE python)
+endif()
+
+if(PYTHON_EXECUTABLE)
+    # Python tests
+    add_test(
+        NAME Python_Tests_Sequential
+        COMMAND ${PYTHON_EXECUTABLE} -m pytest ${CMAKE_SOURCE_DIR}/tests/test_python_api.py -v --color=yes
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+    
+    # Make sure Python module is built before running Python tests
+    set_tests_properties(Python_Tests_Sequential PROPERTIES
+        DEPENDS _mpi_core
+    )
+endif()
