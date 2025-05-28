@@ -2,17 +2,17 @@ import os
 import sys
 from typing import List, Optional
 try:
-    from . import _mpi_core
+    from . import _parallel_sum
 except ImportError:
-    import _mpi_core
+    import _parallel_sum
 
-class MPIComputer:
+class ParaSum:
     """High-level interface for MPI computations."""
     
     def __init__(self, auto_spawn: bool = True, num_processes: Optional[int] = None):
         self.auto_spawn = auto_spawn
         self.num_processes = num_processes or os.cpu_count()
-        self._wrapper = None
+        self.paraSum = None
         self._ensure_mpi_environment()
     
     def _ensure_mpi_environment(self):
@@ -20,16 +20,16 @@ class MPIComputer:
         # Check if we're already in an MPI environment
         if 'OMPI_COMM_WORLD_SIZE' in os.environ or 'PMI_SIZE' in os.environ:
             # Already in MPI context
-            self._wrapper = _mpi_core.MPIWrapper()
+            self.paraSum = _parallel_sum.ParaSum()
             return
         
-        if self.auto_spawn and self._wrapper is None:
+        if self.auto_spawn and self.paraSum is None:
             # Need to restart with mpirun
             self._restart_with_mpi()
     
     def _restart_with_mpi(self):
         """Restart the current script with mpirun."""
-        if len(sys.argv) > 0 and not sys.argv[0].endswith('pytest'):
+        if len(sys.argv) > 0:
             mpi_cmd = [
                 'mpirun', '-n', str(self.num_processes),
                 sys.executable
@@ -37,35 +37,32 @@ class MPIComputer:
             
             print(f"Restarting with MPI: {' '.join(mpi_cmd)}")
             os.execvp('mpirun', mpi_cmd)
-        else:
-            # In testing or interactive mode, just create wrapper
-            self._wrapper = _mpi_core.MPIWrapper()
     
-    def compute(self, data: List[float]) -> List[float]:
-        """Run parallel computation on data."""
-        if self._wrapper is None:
-            self._wrapper = _mpi_core.MPIWrapper()
+    def parallel_sum(self, data: List[float]) -> List[float]:
+        """Run parallel summation on data."""
+        if self.paraSum is None:
+            self.paraSum = _parallel_sum.ParaSum()
         
-        return self._wrapper.parallel_compute(data)
+        return self.paraSum.parallel_sum(data)
     
     @property
     def rank(self) -> int:
         """Get MPI rank."""
-        if self._wrapper is None:
-            self._wrapper = _mpi_core.MPIWrapper()
-        return self._wrapper.get_rank()
+        if self.paraSum is None:
+            self.paraSum = _parallel_sum.ParaSum()
+        return self.paraSum.get_rank()
     
     @property
     def size(self) -> int:
         """Get MPI size."""
-        if self._wrapper is None:
-            self._wrapper = _mpi_core.MPIWrapper()
-        return self._wrapper.get_size()
+        if self.paraSum is None:
+            self.paraSum = _parallel_sum.ParaSum()
+        return self.paraSum.get_size()
     
     @property
     def is_mpi_initialized(self) -> bool:
         """Check if MPI is initialized."""
-        if self._wrapper is None:
+        if self.paraSum is None:
             return False
-        return self._wrapper.is_initialized()
+        return self.paraSum.is_initialized()
     

@@ -1,19 +1,18 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
-#include "mpi_wrapper.hh"
+#include "parallel_sum.hh"
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(_mpi_core, m) {
-    m.doc() = "MPI wrapper for Python";
+PYBIND11_MODULE(_parallel_sum, m) {
+    m.doc() = "Parallel summation with mpi for Python";
     
-    py::class_<MPIWrapper>(m, "MPIWrapper")
+    py::class_<ParaSum>(m, "ParaSum")
         .def(py::init<>())
-        .def("initialize", &MPIWrapper::initialize, "Initialize MPI")
-        .def("parallel_compute", &MPIWrapper::parallel_compute, "Run parallel computation")
-        .def("get_rank", &MPIWrapper::get_rank, "Get MPI rank")
-        .def("get_size", &MPIWrapper::get_size, "Get MPI size")
-        .def("is_initialized", &MPIWrapper::is_initialized, "Check if MPI is initialized")
-        .def("spawn_processes", &MPIWrapper::spawn_processes, "Spawn MPI processes");
+        .def("initialize", &ParaSum::initialize, "Initialize MPI")
+        .def("parallel_sum", &ParaSum::parallel_sum, "Run parallel summation")
+        .def("get_rank", &ParaSum::get_rank, "Get MPI rank")
+        .def("get_size", &ParaSum::get_size, "Get MPI size")
+        .def("is_initialized", &ParaSum::is_initialized, "Check if MPI is initialized");
 }

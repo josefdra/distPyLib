@@ -3,10 +3,10 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 
 ext_modules = [
     Pybind11Extension(
-        "distPyLib._mpi_core",
+        "distPyLib._parallel_sum",
         [
             "src/cc/python_bindings.cc",
-            "src/cc/mpi_wrapper.cc",
+            "src/cc/parallel_sum.cc",
         ],
         include_dirs=[
             "src/cc",

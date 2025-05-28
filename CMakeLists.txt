@@ -13,31 +13,31 @@ find_package(pybind11 REQUIRED)
 include_directories(${CMAKE_SOURCE_DIR}/src/cc)
 
 # Create the C++ library
-add_library(mpi_core STATIC
-    src/cc/mpi_wrapper.cc
+add_library(parallel_sum STATIC
+    src/cc/parallel_sum.cc
 )
 
-target_link_libraries(mpi_core 
+target_link_libraries(parallel_sum 
     MPI::MPI_CXX
 )
 
-target_include_directories(mpi_core PUBLIC
+target_include_directories(parallel_sum PUBLIC
     ${CMAKE_SOURCE_DIR}/src/cc
     ${MPI_CXX_INCLUDE_DIRS}
 )
 
 # Create Python module
-pybind11_add_module(_mpi_core 
+pybind11_add_module(_parallel_sum 
     src/cc/python_bindings.cc
 )
 
-target_link_libraries(_mpi_core PRIVATE 
-    mpi_core
+target_link_libraries(_parallel_sum PRIVATE 
+    parallel_sum
     MPI::MPI_CXX
 )
 
 # Compiler-specific options
-target_compile_definitions(_mpi_core PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+target_compile_definitions(_parallel_sum PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
 
 # Enable testing
 enable_testing()
@@ -58,6 +58,6 @@ if(PYTHON_EXECUTABLE)
     
     # Make sure Python module is built before running Python tests
     set_tests_properties(Python_Tests_Sequential PROPERTIES
-        DEPENDS _mpi_core
+        DEPENDS _parallel_sum
     )
 endif()

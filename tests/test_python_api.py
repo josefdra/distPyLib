@@ -3,52 +3,36 @@ import sys
 import os
 import atexit
 
-# Add the build directory to path - try multiple locations
-possible_paths = [
-    os.path.join(os.path.dirname(__file__), '..', 'build'),
-    os.path.join(os.path.dirname(__file__), '..', 'build', 'lib'),
-    os.path.join(os.path.dirname(__file__), '..'),  # If installed with pip -e .
-]
+from distPyLib import ParaSum
 
-for path in possible_paths:
-    if path not in sys.path:
-        sys.path.insert(0, path)
+_para_sum = None
 
-from distPyLib import MPIComputer
-
-# Global computer instance to avoid multiple MPI initializations
-_global_computer = None
-
-def get_computer():
-    """Get a singleton MPI computer instance."""
-    global _global_computer
-    if _global_computer is None:
-        _global_computer = MPIComputer(auto_spawn=False)
-    return _global_computer
+def get_para_sum():
+    """Get a singleton MPI sum instance."""
+    global _para_sum
+    if _para_sum is None:
+        _para_sum = ParaSum(auto_spawn=False)
+    return _para_sum
 
 def test_mpi_computer_creation():
     """Test that MPIComputer can be created."""
-    computer = get_computer()
-    assert computer is not None
+    para_sum = get_para_sum()
+    assert para_sum is not None
 
 def test_mpi_initialization():
     """Test MPI initialization."""
-    computer = get_computer()
-    assert computer.rank >= 0
-    assert computer.size >= 1
+    para_sum = get_para_sum()
+    assert para_sum.rank >= 0
+    assert para_sum.size >= 1
 
 def test_parallel_computation():
     """Test parallel computation."""
-    computer = get_computer()
+    para_sum = get_para_sum()
     data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-    results = computer.compute(data)
+    result = para_sum.parallel_sum(data)
     
-    assert len(results) == computer.size
-    assert all(isinstance(r, float) for r in results)
-    
-    # Verify the computation makes sense
-    # Each process should have computed something > 0
-    assert all(r > 0 for r in results)
+    assert isinstance(result, float)
+    assert result == 21.0
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
