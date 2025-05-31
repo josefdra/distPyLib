@@ -36,10 +36,13 @@ def main():
     # Test collective operation with data
     # Create some test data
     local_data = np.array([float(rank + 1), float(rank * 2)], dtype=np.float64)
-    data_ptr = local_data.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+    
+    print(f"python script, rank {rank}, local data before collective operation: {local_data}")
     
     # Call C++ collective operation
-    result = distPyLib.cc_collective_operation(data_ptr, len(local_data))
+    result = distPyLib.cc_collective_operation(local_data, len(local_data))
+    
+    print(f"python script, rank {rank},  local data after collective operation: {local_data}")
     
     print(f"Python: Rank {rank} - C++ collective result: {result}")
     

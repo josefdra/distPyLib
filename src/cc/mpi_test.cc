@@ -78,6 +78,12 @@ double cc_collective_operation(double *data, int data_size) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+  data[0] = rank;
+
+  std::cout << "Changed first element of data from "
+            << data[0] << " to rank number: " << rank 
+            << std::endl;
+
   // Calculate local sum
   double local_sum = 0.0;
   for (int i = 0; i < data_size; i++) {

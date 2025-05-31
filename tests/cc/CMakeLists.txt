@@ -9,5 +9,9 @@ add_executable(test_runner
 target_link_libraries(test_runner
     GTest::gtest
     GTest::gtest_main
+    mpi_test
     MPI::MPI_CXX
 )
+
+# Add the test
+add_test(NAME mpi_tests COMMAND test_runner)
