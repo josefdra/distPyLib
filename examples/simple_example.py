@@ -6,7 +6,6 @@ then calls a C++ library that uses the same MPI communicator.
 
 import sys
 from mpi4py import MPI
-import ctypes
 import numpy as np
 import distPyLib
 
