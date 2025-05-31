@@ -1,23 +1,53 @@
 #!/usr/bin/env python3
-from distPyLib import ParaSum
+"""
+Test script that initializes MPI across 4 ranks in Python,
+then calls a C++ library that uses the same MPI communicator.
+"""
+
+import sys
+from mpi4py import MPI
+import ctypes
+import numpy as np
+import distPyLib
 
 def main():
-    # No more automatic mpirun restart - runs as single Python process
-    paraSum = ParaSum(num_processes=4)
+    # Initialize MPI
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
     
-    print(f"Python process running on rank {paraSum.rank} of {paraSum.size}")
-    print("(This should always be rank 0 of 1)")
+    print(f"Python: Rank {rank}/{size} initialized")
     
-    # Some data to process
-    data = list(range(1, 13))  # [1, 2, 3, ..., 12]
-    print(f"Input data: {data}")
+    # Ensure we have exactly 4 ranks
+    if size != 4:
+        if rank == 0:
+            print(f"Error: Expected 4 ranks, got {size}")
+            print("Run with: mpirun -n 4 python mpi_test.py")
+        sys.exit(1)
     
-    # Run parallel computation (C++ will spawn MPI processes internally)
-    print("Starting parallel computation...")
-    result = paraSum.parallel_sum(data)
+    # Synchronize before calling C++ functions
+    comm.Barrier()
     
-    print(f"Final sum: {result}")
-    print("Done!")
+    print(f"Python: Rank {rank} calling C++ library...")
+    
+    # Call C++ function that performs MPI communication
+    distPyLib.cc_mpi_test(rank, size)
+    
+    # Test collective operation with data
+    # Create some test data
+    local_data = np.array([float(rank + 1), float(rank * 2)], dtype=np.float64)
+    data_ptr = local_data.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+    
+    # Call C++ collective operation
+    result = distPyLib.cc_collective_operation(data_ptr, len(local_data))
+    
+    print(f"Python: Rank {rank} - C++ collective result: {result}")
+    
+    # Final synchronization
+    comm.Barrier()
+    
+    if rank == 0:
+        print("Python: All ranks completed successfully!")
 
 if __name__ == "__main__":
     main()
